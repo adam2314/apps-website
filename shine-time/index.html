@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#071c2a">
+  <meta name="description" content="Shine Time: a 3D car wash simulator. Rinse, foam, scrub, dry and wax cars, then grow your wash into a car spa empire.">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Shine Time">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preload" href="fonts/fredoka-hebrew.woff2" as="font" type="font/woff2" crossorigin>
+  <title>Shine Time · 3D Car Wash Sim</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+</head>
+<body>
+  <canvas id="scene" data-i18n-aria="canvas.aria"></canvas>
+
+  <div id="loading" class="loading"><div class="spinner"></div><p data-i18n="loading"></p></div>
+
+  <div id="hud" class="hud hidden">
+    <header class="topbar" id="topbar">
+      <div class="pill brand"><span class="brand-mark">✦</span><span data-i18n="brand"></span></div>
+      <div class="pill money"><span class="coin" data-icon="coin"></span><b id="hud-money">$0</b></div>
+      <div class="pill clock">
+        <span class="ico" data-icon="clock"></span>
+        <span id="hud-day"></span><b id="hud-time"></b>
+        <span class="daybar"><i id="hud-daybar"></i></span>
+      </div>
+      <div class="pill rep" data-i18n-title="hud.rep"><span class="ico star" data-icon="starSmall"></span><b id="hud-rep">3.0</b></div>
+      <div class="pill goal" data-i18n-title="hud.goalTitle"><span data-i18n="hud.goal"></span><b id="hud-goal"></b></div>
+      <div class="spacer"></div>
+      <button class="icon-btn" id="btn-shop" data-i18n-title="btn.shop" data-i18n-aria="btn.shopAria"><span data-icon="cart"></span></button>
+      <button class="icon-btn" id="btn-sound" data-i18n-title="btn.sound" data-i18n-aria="btn.soundAria"><span data-icon="soundOn"></span></button>
+      <button class="icon-btn" id="btn-full" data-i18n-title="btn.full" data-i18n-aria="btn.full"><span data-icon="full"></span></button>
+      <button class="icon-btn" id="btn-pause" data-i18n-title="btn.pause" data-i18n-aria="btn.pauseAria"><span data-icon="pause"></span></button>
+    </header>
+
+    <section class="queue" id="queue" data-i18n-aria="aria.queue"></section>
+    <section class="job" id="job" aria-live="polite"></section>
+
+    <div class="step-banner" id="step-banner">
+      <div class="step-top"><span class="step-count" id="step-count"></span><b id="step-name"></b></div>
+      <div class="step-hint" id="step-hint"></div>
+      <div class="step-track"><i id="step-fill"></i></div>
+    </div>
+    <div class="side-hint hidden" id="side-hint"><span data-icon="rotR"></span><em data-i18n="side.hint"></em></div>
+
+    <div class="cam-controls" id="cam-controls">
+      <button class="icon-btn" id="cam-left" data-i18n-title="cam.left" data-i18n-aria="cam.left"><span data-icon="rotL"></span></button>
+      <button class="icon-btn" id="cam-top" data-i18n-title="cam.top" data-i18n-aria="cam.top"><span data-icon="camTop"></span></button>
+      <button class="icon-btn" id="cam-right" data-i18n-title="cam.right" data-i18n-aria="cam.right"><span data-icon="rotR"></span></button>
+    </div>
+
+    <nav class="toolbar" id="toolbar" data-i18n-aria="aria.tools"></nav>
+    <div class="payout hidden" id="payout"></div>
+    <div class="toasts" id="toasts" aria-live="polite"></div>
+  </div>
+
+  <!-- Title -->
+  <div class="screen title-screen hidden" id="screen-title">
+    <div class="title-card">
+      <div class="logo">
+        <div class="logo-mark">✦</div>
+        <h1 data-i18n="title.h1"></h1>
+        <p data-i18n="title.sub"></p>
+      </div>
+      <div class="title-buttons">
+        <button class="btn primary big" id="btn-continue" data-i18n="title.continue"></button>
+        <button class="btn big" id="btn-new" data-i18n="title.new"></button>
+        <button class="btn" id="btn-howto" data-i18n="howto"></button>
+        <button class="btn hidden" id="btn-install"><span class="btn-ico" data-icon="download"></span><span data-i18n="title.install"></span></button>
+      </div>
+      <div class="lang-switch" role="group" data-i18n-aria="set.language">
+        <button class="lang-btn" data-lang="he" lang="he" dir="rtl">עִבְרִית</button>
+        <button class="lang-btn" data-lang="en" lang="en" dir="ltr">English</button>
+      </div>
+      <div class="settings-row">
+        <label class="toggle"><input type="checkbox" id="set-sound-title"><span data-i18n="set.sound"></span></label>
+        <label class="select"><span data-i18n="set.graphics"></span>
+          <select id="set-quality-title">
+            <option value="auto" data-i18n="q.auto"></option><option value="high" data-i18n="q.high"></option><option value="medium" data-i18n="q.medium"></option><option value="low" data-i18n="q.low"></option>
+          </select>
+        </label>
+      </div>
+      <p class="fine" data-i18n="title.fine"></p>
+    </div>
+  </div>
+
+  <!-- Shop -->
+  <div class="screen hidden" id="screen-shop">
+    <div class="panel shop-panel" role="dialog" aria-labelledby="shop-title">
+      <header class="panel-head">
+        <h2 id="shop-title" data-i18n="shop.title"></h2>
+        <div class="pill money"><span class="coin" data-icon="coin"></span><b id="shop-money">$0</b></div>
+        <button class="icon-btn" id="shop-close" data-i18n-aria="close"><span data-icon="close"></span></button>
+      </header>
+      <div class="shop-body" id="shop-body"></div>
+    </div>
+  </div>
+
+  <!-- Day summary -->
+  <div class="screen hidden" id="screen-summary">
+    <div class="panel summary-panel" role="dialog" aria-labelledby="sum-title">
+      <h2 id="sum-title"></h2>
+      <div class="sum-stars" id="sum-stars"></div>
+      <div class="sum-grid" id="sum-grid"></div>
+      <div class="sum-rank" id="sum-rank"></div>
+      <div class="row-buttons">
+        <button class="btn" id="sum-shop" data-i18n="shop.title"></button>
+        <button class="btn primary" id="sum-next"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pause -->
+  <div class="screen hidden" id="screen-pause">
+    <div class="panel pause-panel" role="dialog" aria-labelledby="pause-title">
+      <h2 id="pause-title" data-i18n="pause.title"></h2>
+      <button class="btn primary big" id="pause-resume" data-i18n="pause.resume"></button>
+      <button class="btn" id="pause-shop" data-i18n="shop.title"></button>
+      <button class="btn" id="pause-howto" data-i18n="howto"></button>
+      <button class="btn" id="pause-full" data-i18n="pause.full"></button>
+      <div class="settings-col">
+        <label class="toggle"><input type="checkbox" id="set-sound"><span data-i18n="set.sound"></span></label>
+        <label class="toggle"><input type="checkbox" id="set-vibrate"><span data-i18n="set.vibrate"></span></label>
+        <label class="select"><span data-i18n="set.graphics"></span>
+          <select id="set-quality">
+            <option value="auto" data-i18n="q.auto"></option><option value="high" data-i18n="q.high"></option><option value="medium" data-i18n="q.medium"></option><option value="low" data-i18n="q.low"></option>
+          </select>
+        </label>
+        <p class="fine" data-i18n="pause.gfxNote"></p>
+      </div>
+      <button class="btn ghost" id="pause-quit" data-i18n="pause.quit"></button>
+    </div>
+  </div>
+
+  <!-- How to play -->
+  <div class="screen hidden" id="screen-howto">
+    <div class="panel howto-panel" role="dialog" aria-labelledby="howto-title">
+      <header class="panel-head"><h2 id="howto-title" data-i18n="howto"></h2><button class="icon-btn" id="howto-close" data-i18n-aria="close"><span data-icon="close"></span></button></header>
+      <div class="howto-body">
+        <div class="howto-item"><span data-icon="hose"></span><p data-i18n-html="howto.1"></p></div>
+        <div class="howto-item"><span data-icon="sponge"></span><p data-i18n-html="howto.2"></p></div>
+        <div class="howto-item"><span data-icon="rotR"></span><p data-i18n-html="howto.3"></p></div>
+        <div class="howto-item"><span data-icon="starSmall" class="gold"></span><p data-i18n-html="howto.4"></p></div>
+        <div class="howto-item"><span data-icon="cart"></span><p data-i18n-html="howto.5"></p></div>
+        <div class="howto-keys" data-i18n-html="howto.keys"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- First-day tutorial -->
+  <div class="screen hidden" id="screen-tutorial">
+    <div class="panel tutorial-panel" role="dialog" aria-labelledby="tut-title">
+      <h2 id="tut-title" data-i18n="tut.title"></h2>
+      <p data-i18n="tut.p"></p>
+      <ol>
+        <li data-i18n-html="tut.1"></li>
+        <li data-i18n-html="tut.2"></li>
+        <li data-i18n="tut.3"></li>
+      </ol>
+      <button class="btn primary big" id="tut-ok" data-i18n="tut.ok"></button>
+    </div>
+  </div>
+
+  <!-- Install offline copy -->
+  <div class="screen hidden" id="screen-offline">
+    <div class="panel offline-panel" role="dialog" aria-labelledby="off-title">
+      <header class="panel-head"><h2 id="off-title" data-i18n="off.title"></h2><button class="icon-btn" id="off-close" data-i18n-aria="close"><span data-icon="close"></span></button></header>
+      <button class="btn primary big hidden" id="off-app"><span class="btn-ico" data-icon="install"></span><span data-i18n="off.app"></span></button>
+      <a class="btn primary big hidden" id="off-site"><span class="btn-ico" data-icon="install"></span><span data-i18n="off.siteBtn"></span></a>
+      <p class="off-tip hidden" id="off-tip"></p>
+      <button class="btn big" id="off-download"><span class="btn-ico" data-icon="download"></span><span data-i18n="off.download"></span></button>
+      <p class="off-note" id="off-note" data-i18n="off.note"></p>
+      <p class="off-status" id="off-status" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div id="boot-error" class="boot-error hidden"></div>
+
+  <noscript><div class="boot-error">Shine Time needs JavaScript enabled. · הַמִּשְׂחָק צָרִיךְ JavaScript.</div></noscript>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

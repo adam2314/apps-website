@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#5b4ae0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="קוביות צבעוניות">
+<title>קוביות צבעוניות</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect x='4' y='7' width='32' height='30' rx='8' fill='%23c96a0c'/%3E%3Crect x='4' y='4' width='32' height='30' rx='8' fill='%23ff9b2f'/%3E%3Ccircle cx='15' cy='17' r='4.5' fill='%23fff'/%3E%3Ccircle cx='25' cy='17' r='4.5' fill='%23fff'/%3E%3Ccircle cx='15.5' cy='18' r='2.2' fill='%231d1640'/%3E%3Ccircle cx='25.5' cy='18' r='2.2' fill='%231d1640'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <button class="pill" id="lvlBtn" aria-label="בחירת שלב">
+      <svg viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg>
+      <span id="lvl">שָׁלָב 1</span>
+    </button>
+    <div class="timer pill">
+      <div class="bar" id="bar"><i id="barFill"></i></div>
+      <span id="time">0:00</span>
+    </div>
+    <button class="ibtn" id="soundBtn" aria-label="צליל"></button>
+    <button class="ibtn" id="restartBtn" aria-label="להתחיל מחדש">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
+    </button>
+  </header>
+  <div id="stage"><canvas id="c"></canvas></div>
+  <div id="hintRow">
+    <button class="say" id="sayHint" aria-label="הקראה"></button>
+    <div id="hint"></div>
+  </div>
+</div>
+
+<!-- How to play -->
+<div class="overlay" id="intro">
+  <div class="card">
+    <h1>קֻבִּיּוֹת צִבְעוֹנִיּוֹת</h1>
+    <ul class="steps" id="introSteps">
+      <li>
+        <svg viewBox="0 0 52 40"><rect x="10" y="7" width="32" height="30" rx="8" fill="#c96a0c"/><rect x="10" y="4" width="32" height="30" rx="8" fill="#ff9b2f"/><circle cx="21" cy="17" r="4.5" fill="#fff"/><circle cx="31" cy="17" r="4.5" fill="#fff"/><circle cx="21.5" cy="18" r="2.2" fill="#1d1640"/><circle cx="31.5" cy="18" r="2.2" fill="#1d1640"/></svg>
+        <span>גּוֹרְרִים קֻבִּיָּה.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 52 40"><rect x="28" y="9" width="22" height="22" rx="6" fill="#a85cff"/><path d="M24 20H12m5-5-5 5 5 5" stroke="#5b4ae0" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="4" width="7" height="32" rx="3" fill="#a85cff"/></svg>
+        <span>מְבִיאִים אוֹתָהּ לַשַּׁעַר בְּאוֹתוֹ צֶבַע.</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 52 40"><path d="M26 3l4.5 10.5L41 18l-10.5 4.5L26 33l-4.5-10.5L11 18l10.5-4.5z" fill="#ffc93c"/><circle cx="43" cy="7" r="3" fill="#ff72cf"/><circle cx="9" cy="32" r="3" fill="#2fc6ea"/></svg>
+        <span>הִיא יוֹצֵאת מֵהַלּוּחַ!</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 52 40"><circle cx="26" cy="21" r="15" fill="#3fd06f"/><circle cx="26" cy="21" r="11" fill="#fff"/><path d="M26 13v8l5 4" stroke="#22994b" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="22" y="2" width="8" height="5" rx="2" fill="#22994b"/></svg>
+        <span>מְנַקִּים אֶת כָּל הַלּוּחַ לִפְנֵי שֶׁנִּגְמַר הַזְּמַן.</span>
+      </li>
+    </ul>
+    <div class="row">
+      <button class="say" id="sayIntro" aria-label="הקראה"></button>
+      <button class="btn" id="introBtn">מַתְחִילִים!</button>
+    </div>
+  </div>
+</div>
+
+<!-- Level finished / time up -->
+<div class="overlay" id="ov">
+  <div class="card">
+    <div class="stars" id="ovStars"></div>
+    <h2 id="ovTitle"></h2>
+    <p id="ovText"></p>
+    <p class="stats" id="ovStats"></p>
+    <div class="row">
+      <button class="say" id="sayResult" aria-label="הקראה"></button>
+      <button class="btn" id="ovBtn"></button>
+    </div>
+    <button class="link" id="ovLink"></button>
+  </div>
+</div>
+
+<!-- Level select -->
+<div class="overlay" id="levels">
+  <div class="card levels-card">
+    <div class="lv-head">
+      <h2>בּוֹחֲרִים שָׁלָב</h2>
+      <button class="ibtn light" id="lvClose" aria-label="סגירה">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div class="lv-grid" id="lvGrid"></div>
+    <button class="btn soft" id="installBtn" data-online-only hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3h16v-3"/></svg>
+      <span>לְהַתְקִין וּלְשַׂחֵק בְּלִי אִינְטֶרְנֶט</span>
+    </button>
+    <button class="link" id="howBtn">אֵיךְ מְשַׂחֲקִים?</button>
+  </div>
+</div>
+
+<!-- Play without internet (left out of the downloaded copy) -->
+<div class="overlay install-ov" id="install" data-online-only>
+  <div class="card install-card" role="dialog" aria-labelledby="inTitle">
+    <svg class="in-art" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-5-5 5 5 5-5M4 17v3h16v-3"/></svg>
+    <h2 id="inTitle">מְשַׂחֲקִים בְּלִי אִינְטֶרְנֶט</h2>
+    <button class="btn" id="inApp" hidden>הַתְקָנָה כְּאַפְּלִיקַצְיָה</button>
+    <a class="btn" id="inSite" hidden>הַתְקָנָה מֵהָאֲתָר</a>
+    <p class="tip" id="inTip" hidden></p>
+    <button class="btn blue" id="inDownload">לְהוֹרִיד אֶת הַמִּשְׂחָק</button>
+    <p class="note" id="inNote">נִשְׁמָר קֹבֶץ אֶחָד. פּוֹתְחִים אוֹתוֹ וּמְשַׂחֲקִים מָתַי שֶׁרוֹצִים, גַּם בְּלִי אִינְטֶרְנֶט. הַשְּׁלַבִּים וְהַכּוֹכָבִים שֶׁלָּכֶם עוֹבְרִים אִתְּכֶם.</p>
+    <p class="status" id="inStatus" aria-live="polite"></p>
+    <button class="link" id="inClose">סְגִירָה</button>
+  </div>
+</div>
+
+<script src="offline.js" data-online-only></script>
+<script src="levels.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

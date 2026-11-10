@@ -1,0 +1,19 @@
+{
+  "name": "Shine Time: 3D Car Wash Sim",
+  "short_name": "Shine Time",
+  "description": "Rinse, foam, scrub, dry and wax cars in 3D, then grow your wash into a car spa empire.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
+  "orientation": "any",
+  "background_color": "#071c2a",
+  "theme_color": "#071c2a",
+  "categories": ["games", "simulation"],
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

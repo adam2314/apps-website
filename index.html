@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2b1f8f">
+<title>המשחקים שלנו</title>
+<link rel="icon" href="blockout/icons/icon.svg" type="image/svg+xml">
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+    background: radial-gradient(120% 80% at 50% 0%, #5b4ae0 0%, #2b1f8f 55%, #071c2a 100%);
+    color: #fff; font-family: "Segoe UI", "Noto Sans Hebrew", Rubik, Arial, sans-serif;
+  }
+  h1 { margin: 0 0 24px; font-size: clamp(30px, 8vw, 44px); line-height: 1.3; text-align: center; }
+  .games { display: grid; gap: 16px; width: min(560px, 100%); }
+  @media (min-width: 620px) { .games { grid-template-columns: 1fr 1fr; } }
+  .game {
+    display: flex; align-items: center; gap: 16px; padding: 16px; border-radius: 24px;
+    background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .18);
+    color: inherit; text-decoration: none; transition: transform .12s ease, background .12s ease;
+  }
+  @media (min-width: 620px) { .game { flex-direction: column; text-align: center; padding: 24px 16px; } }
+  .game:hover { background: rgba(255, 255, 255, .16); }
+  .game:active { transform: scale(.97); }
+  .game img { width: 88px; height: 88px; border-radius: 22px; flex: none; box-shadow: 0 10px 30px rgba(0, 0, 0, .35); }
+  .game b { display: block; font-size: 24px; line-height: 1.5; }
+  .game span { display: block; color: rgba(255, 255, 255, .75); font-size: 17px; line-height: 1.5; }
+  p.hint { margin: 28px 0 0; max-width: 520px; text-align: center; color: rgba(255, 255, 255, .8); font-size: 17px; line-height: 1.7; }
+</style>
+</head>
+<body>
+  <h1>הַמִּשְׂחָקִים שֶׁלָּנוּ</h1>
+  <div class="games">
+    <a class="game" href="shine-time/">
+      <img src="shine-time/icons/icon-192.png" alt="">
+      <div><b>שְׁטִיפָה נוֹצֶצֶת</b><span>מִשְׂחַק שְׁטִיפַת מְכוֹנִיּוֹת</span></div>
+    </a>
+    <a class="game" href="blockout/">
+      <img src="blockout/icons/icon-192.png" alt="">
+      <div><b>קֻבִּיּוֹת צִבְעוֹנִיּוֹת</b><span>מִשְׂחַק חֲשִׁיבָה עִם קֻבִּיּוֹת</span></div>
+    </a>
+  </div>
+  <p class="hint">רוֹצִים לְשַׂחֵק גַּם בְּלִי אִינְטֶרְנֶט? פּוֹתְחִים מִשְׂחָק וּמַתְקִינִים אוֹתוֹ כְּאַפְּלִיקַצְיָה.</p>
+</body>
+</html>
